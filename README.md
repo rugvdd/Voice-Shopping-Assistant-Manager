@@ -8,15 +8,8 @@ open `index.html` and it works.
 
 ## 1. Quick start
 
-**Option A — just open it**
-Double-click `index.html`. It works standalone, but Chrome/Edge/Safari
-restrict the microphone on `file://` pages in some cases, so:
-
-**Option B — run a local server (recommended)**
-```bash
-cd voice-shopping-assistant
-python3 -m http.server 8080
-# then open http://localhost:8080
+Just click the link below and get access to the project 
+https://voice-shopping-assistant-manager.vercel.app/
 ```
 Voice recognition requires **HTTPS or localhost** — this is a browser
 security rule, not something this app controls.
