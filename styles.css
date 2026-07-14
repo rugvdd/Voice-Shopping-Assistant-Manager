@@ -1,0 +1,406 @@
+/* ---------------------------------------------------------------------
+   Design tokens
+   Palette: paper (soft sage-white), ink, citrus (mic/CTA), produce (green,
+   add/success), berry (red, remove/error), sky (blue, info/suggestions).
+   Type: Fraunces (display, a little quirky) + Public Sans (UI body) +
+   IBM Plex Mono (quantities & prices — reads like receipt data).
+--------------------------------------------------------------------- */
+:root {
+  --paper: #F3F5EF;
+  --paper-raised: #FFFFFF;
+  --ink: #1C2321;
+  --ink-soft: #5B655F;
+  --line: #DEE1D7;
+  --citrus: #E29A3C;
+  --citrus-dark: #C17E24;
+  --produce: #4C7A4C;
+  --produce-bg: #E7F0E4;
+  --berry: #B5453B;
+  --berry-bg: #F7E7E5;
+  --sky: #3F6E93;
+  --sky-bg: #E6EEF3;
+  --radius: 14px;
+  --shadow: 0 2px 10px rgba(28, 35, 33, 0.06);
+  --font-display: "Fraunces", serif;
+  --font-body: "Public Sans", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+.hidden { display: none !important; }
+
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 20px 18px 64px;
+}
+
+/* ---------- Header ---------- */
+.app-header {
+  padding: 8px 2px 20px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 20px;
+}
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--produce);
+  margin: 0 0 6px;
+}
+.app-header h1 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(26px, 6vw, 32px);
+  line-height: 1.15;
+  margin: 0 0 16px;
+  letter-spacing: -0.01em;
+}
+.lang-picker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.lang-picker label {
+  font-size: 12px;
+  color: var(--ink-soft);
+  font-family: var(--font-mono);
+}
+.lang-picker select {
+  font-family: var(--font-body);
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  background: var(--paper-raised);
+  color: var(--ink);
+}
+
+/* ---------- Voice console (signature element) ---------- */
+.voice-console {
+  background: var(--paper-raised);
+  border-radius: 20px;
+  padding: 28px 20px 20px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  margin-bottom: 24px;
+}
+
+.mic-btn {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(160deg, var(--citrus), var(--citrus-dark));
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 18px rgba(194, 128, 30, 0.35);
+  transition: transform 0.15s ease;
+}
+.mic-btn:active { transform: scale(0.96); }
+.mic-btn:focus-visible { outline: 3px solid var(--sky); outline-offset: 3px; }
+
+.mic-icon { width: 32px; height: 32px; }
+.waveform {
+  position: absolute;
+  inset: 0;
+  width: 40px;
+  height: 20px;
+  margin: auto;
+  fill: #fff;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.waveform rect { transform-origin: center; animation: none; }
+.mic-btn.listening .mic-icon { opacity: 0; }
+.mic-btn.listening .waveform { opacity: 1; }
+.waveform.active rect { animation: bounce 0.9s ease-in-out infinite; }
+.waveform rect:nth-child(1) { animation-delay: 0.0s; }
+.waveform rect:nth-child(2) { animation-delay: 0.1s; }
+.waveform rect:nth-child(3) { animation-delay: 0.2s; }
+.waveform rect:nth-child(4) { animation-delay: 0.3s; }
+.waveform rect:nth-child(5) { animation-delay: 0.15s; }
+.waveform rect:nth-child(6) { animation-delay: 0.25s; }
+.waveform rect:nth-child(7) { animation-delay: 0.05s; }
+.waveform rect:nth-child(8) { animation-delay: 0.35s; }
+@keyframes bounce {
+  0%, 100% { transform: scaleY(0.5); }
+  50% { transform: scaleY(1.15); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .waveform.active rect { animation: none; }
+}
+
+.mic-status {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin: 12px 0 16px;
+}
+
+.text-fallback {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.text-fallback input {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 24px;
+  border: 1px solid var(--line);
+  font-family: var(--font-body);
+  font-size: 14px;
+  background: var(--paper);
+}
+.text-fallback input:focus-visible { outline: 2px solid var(--sky); }
+.text-fallback button {
+  width: 40px;
+  border-radius: 50%;
+  border: none;
+  background: var(--ink);
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* "Receipt tape" transcript feed */
+.transcript-feed {
+  margin-top: 16px;
+  max-height: 170px;
+  overflow-y: auto;
+  text-align: left;
+  border-top: 1px dashed var(--line);
+  padding-top: 10px;
+}
+.transcript-line {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  padding: 6px 4px;
+  border-bottom: 1px dotted var(--line);
+  color: var(--ink-soft);
+  animation: slide-in 0.2s ease;
+}
+.transcript-line.interim { color: #A7ADA3; font-style: italic; }
+.transcript-line.action.ok { color: var(--produce); }
+.transcript-line.action.error { color: var(--berry); }
+.transcript-line.action.info { color: var(--sky); }
+@keyframes slide-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Section titles ---------- */
+.section-title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.count-badge {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: var(--ink);
+  color: #fff;
+  border-radius: 20px;
+  padding: 1px 9px;
+}
+
+/* ---------- Suggestions ---------- */
+.suggestions-section { margin-bottom: 26px; }
+.suggestions-tray {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.suggestion-chip {
+  flex: 0 0 auto;
+  background: var(--sky-bg);
+  border: 1px solid transparent;
+  border-radius: 14px;
+  padding: 10px 12px;
+  min-width: 140px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13.5px;
+}
+.chip-reason {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--sky);
+}
+.chip-add, .chip-dismiss {
+  position: absolute;
+  top: 6px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1;
+  color: var(--ink-soft);
+}
+.chip-add { right: 26px; color: var(--produce); font-weight: 700; }
+.chip-dismiss { right: 6px; }
+.muted { color: var(--ink-soft); }
+.small { font-size: 13px; }
+
+/* ---------- Shopping list ---------- */
+.list-section { margin-bottom: 20px; }
+.empty-state {
+  background: var(--paper-raised);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+  padding: 28px 16px;
+  text-align: center;
+}
+.empty-state p { margin: 0 0 4px; }
+
+.category-group { margin-bottom: 18px; }
+.category-title {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 6px;
+  margin: 0 0 8px;
+}
+.item-list { list-style: none; margin: 0; padding: 0; }
+.item-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--paper-raised);
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  box-shadow: var(--shadow);
+}
+.item-row.done { opacity: 0.5; }
+.item-row.done .item-name { text-decoration: line-through; }
+
+.check {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid var(--produce);
+  background: none;
+  color: var(--produce);
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.item-name { flex: 1; font-size: 14.5px; text-transform: capitalize; }
+.item-qty {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  background: var(--paper);
+  border-radius: 10px;
+  padding: 2px 8px;
+}
+.item-remove {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--berry);
+  opacity: 0.7;
+}
+.item-remove:hover { opacity: 1; }
+
+/* ---------- Search overlay ---------- */
+.search-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(28, 35, 33, 0.45);
+  display: flex;
+  align-items: flex-end;
+  z-index: 20;
+}
+.search-panel {
+  background: var(--paper-raised);
+  width: 100%;
+  max-height: 70vh;
+  border-radius: 20px 20px 0 0;
+  padding: 18px;
+  overflow-y: auto;
+  animation: rise 0.2s ease;
+}
+@keyframes rise { from { transform: translateY(16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.search-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.search-panel-header h2 { font-family: var(--font-display); font-size: 18px; margin: 0; }
+.search-panel-header button {
+  border: none; background: none; font-size: 22px; cursor: pointer; color: var(--ink-soft);
+}
+.result-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+.result-name { font-size: 14.5px; font-weight: 600; }
+.result-meta { font-size: 12px; color: var(--ink-soft); }
+.result-price { font-family: var(--font-mono); font-size: 13px; }
+.btn-small {
+  border: none;
+  background: var(--produce);
+  color: #fff;
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translate(-50%, 20px);
+  background: var(--ink);
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 24px;
+  font-size: 13.5px;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s ease;
+  z-index: 30;
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+.toast.error { background: var(--berry); }
+
+/* ---------- Responsive: tablet/desktop widen gracefully ---------- */
+@media (min-width: 640px) {
+  .app { padding-top: 40px; }
+}
